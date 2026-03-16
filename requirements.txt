@@ -1,0 +1,5 @@
+pandas
+sqlite3
+requests
+flask
+json
