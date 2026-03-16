@@ -40,8 +40,8 @@ def search_recipes():
     rating = request.args.get("rating")
     data = query_db(
         "SELECT * FROM recipes WHERE json_extract(nutrients, '$.calories') = ? OR title = ? OR cuisine = ? OR total_time = ? OR rating = ?",
-        (calories, title, cuisine, total_time, rating),
-    )
+        (calories, title, cuisine, total_time, rating))
+    
     return jsonify({
         "data": data
     })
