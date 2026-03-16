@@ -30,7 +30,7 @@ python database.py
 ```
 
 This command parses the JSON file, loads the objects into dataframes using pandas, and imports them into the SQLite3 database.
-
+The SQLite3 DB will have the table name as "recipes" and have the following columns 'id',cuisine', 'title', 'rating', 'prep_time', 'cook_time', 'total_time', 'description', 'nutrients', 'serves'
 SQLite3 is chosen for its lightweight, serverless, and in-memory nature. No extra servers or applications are required. It is widely used in microservices, mobile apps, and more.
 
 ### 3. Start the Application

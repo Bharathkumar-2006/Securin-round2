@@ -12,12 +12,21 @@ def query_db(query,args=()):
     return data
     conn.close()
     
+#< > = in 2nd endpoint
+# page , limit should go up
+#include key names in response
+
 @app.route("/api/recipes")
 def get_recipes():
-    page = request.args.get("page")
-    limit = request.args.get("limit")
-    data = query_db("SELECT * FROM recipes ORDER BY rating DESC limit ?", (limit,))
-    return jsonify(data)
+    page = int(request.args.get("page"))
+    limit = int(request.args.get("limit"))
+    data = query_db("SELECT * FROM recipes ORDER BY rating DESC limit ? OFFSET ?", (limit, (page - 1) * limit))
+    return jsonify({
+        "page": page,
+        "limit": limit,
+        "total": len(data),
+        "data":data
+    })
 
 
 
@@ -31,7 +40,9 @@ def search_recipes():
     
     data = query_db("SELECT * FROM recipes WHERE json_extract(nutrients, '$.calories') = ? OR title = ? OR cuisine = ? OR total_time = ? OR rating = ?", (calories, title, cuisine, total_time, rating))
 
-    return jsonify(data)
+    return jsonify({
+        "data":data
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
