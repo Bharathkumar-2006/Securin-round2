@@ -8,7 +8,9 @@ cols = ['cuisine', 'title', 'rating', 'prep_time', 'cook_time', 'total_time', 'd
 df = df[cols]
 
 df['nutrients'] = df['nutrients'].apply(json.dumps)
+df['id'] = df.index + 1
 
 conn = sqlite3.connect('recipes.db')
-df.to_sql('recipes', conn, if_exists='replace', index=False)
+df.to_sql('recipes', conn, if_exists='replace', index=True)
+
 conn.close()
