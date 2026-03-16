@@ -29,25 +29,64 @@ def get_recipes():
     })
 
 #API endpoint 2
+def parse_operator(value):
+    if value.startswith(">="):
+        return ">=", value[2:]
+    if value.startswith("<="):
+        return "<=", value[2:]
+    if value.startswith(">"):
+        return ">", value[1:]
+    if value.startswith("<"):
+        return "<", value[1:]
+    if value.startswith("="):
+        return "=", value[1:]
+    return "=", value
+
+
 @app.route("/api/recipes/search")
 def search_recipes():
+
     calories = request.args.get("calories")
     title = request.args.get("title")
     cuisine = request.args.get("cuisine")
     total_time = request.args.get("total_time")
     rating = request.args.get("rating")
-    data = query_db(
-        """SELECT * FROM recipes WHERE (json_extract(nutrients, '$.calories') = ? OR ? IS NULL) 
-        AND (title = ? OR ? IS NULL)
-        AND (cuisine = ? OR ? IS NULL)
-        AND (total_time = ? OR ? IS NULL)
-        AND (rating = ? OR ? IS NULL);""",
-        (calories, calories, title, title, cuisine, cuisine, total_time, total_time, rating, rating))
-    
+
+    query = "SELECT * FROM recipes"
+    conditions = []
+    params = []
+
+    if calories:
+        op, val = parse_operator(calories)
+        conditions.append("json_extract(nutrients, '$.calories') " + op + " ?")
+        params.append(val)
+
+    if title:
+        conditions.append("title LIKE ?")
+        params.append("%" + title + "%")
+
+    if cuisine:
+        conditions.append("cuisine = ?")
+        params.append(cuisine)
+
+    if total_time:
+        op, val = parse_operator(total_time)
+        conditions.append("total_time " + op + " ?")
+        params.append(val)
+
+    if rating:
+        op, val = parse_operator(rating)
+        conditions.append("rating " + op + " ?")
+        params.append(val)
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
+    data = query_db(query, params)
+
     return jsonify({
         "data": data
     })
-
 
 if __name__ == "__main__":
     app.run(debug=True)
