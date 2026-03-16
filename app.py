@@ -14,8 +14,6 @@ def query_db(query, args=()):
     conn.close()
     return results
 
-#< > = in 2nd endpoint - TODO
-
 #API endpoint 1
 @app.route("/api/recipes")
 def get_recipes():
