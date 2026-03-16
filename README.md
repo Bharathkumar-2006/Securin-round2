@@ -1,4 +1,4 @@
-#Recipe Data Collection 
+# Recipe Data Collection 
 ## Project Overview
 
 The project focuses on collecting US recipe data from a JSON file and storing it in a SQLite3 database, enabling retrieval via API calls from the browser.
